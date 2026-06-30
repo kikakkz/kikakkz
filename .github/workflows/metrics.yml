@@ -4,8 +4,8 @@ on:
   schedule: [{ cron: "0 20 * * *" }]
   # 允许手动触发
   workflow_dispatch:
-  # main 分支有推送时立即更新
-  push: { branches: ["main"] }
+  # master 分支有推送时立即更新
+  push: { branches: ["master"] }
 
 jobs:
   github-metrics:
@@ -33,6 +33,9 @@ jobs:
           base: header, activity, community, repositories, metadata
           config_timezone: Asia/Shanghai
           config_twemoji: yes
+
+          # 加大显示宽度，填满 GitHub 个人主页（默认 480px，large 为 960px）
+          config_display: large
 
           # 贡献日历热力图
           plugin_isocalendar: yes
