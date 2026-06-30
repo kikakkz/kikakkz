@@ -1,0 +1,56 @@
+name: Metrics
+on:
+  # 每天北京时间凌晨 4 点自动更新
+  schedule: [{ cron: "0 20 * * *" }]
+  # 允许手动触发
+  workflow_dispatch:
+  # main 分支有推送时立即更新
+  push: { branches: ["main"] }
+
+jobs:
+  github-metrics:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: lowlighter/metrics@latest
+        with:
+          # 输出文件名，README 里引用这个路径
+          filename: github-metrics.svg
+
+          # 需要 Personal Access Token（PAT）
+          # 在 GitHub Settings -> Developer settings -> Personal access tokens -> Tokens (classic)
+          # 生成一个 token，勾选 read:user 和 public_repo（私有仓库多则加 repo），
+          # 然后在本仓库 Settings -> Secrets and variables -> Actions -> New repository secret
+          # 名称填 METRICS_TOKEN
+          token: ${{ secrets.METRICS_TOKEN }}
+
+          # GitHub 用户名
+          user: kikakkz
+
+          # 主题：classic 是默认经典样式，也可以换 github-dark、terminal 等
+          template: classic
+          base: header, activity, community, repositories, metadata
+          config_timezone: Asia/Shanghai
+          config_twemoji: yes
+
+          # 贡献日历热力图
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: full-year
+
+          # 常用语言统计
+          plugin_languages: yes
+          plugin_languages_limit: 8
+          plugin_languages_threshold: 0%
+          plugin_languages_colors: github
+          plugin_languages_sections: most-used
+          plugin_languages_indepth: no
+          plugin_languages_recent_load: 300
+          plugin_languages_recent_days: 14
+
+          # 编码习惯统计（提交时间分布等）
+          plugin_habits: yes
+          plugin_habits_from: 200
+          plugin_habits_days: 14
+          plugin_habits_facts: yes
+          plugin_habits_charts: yes
